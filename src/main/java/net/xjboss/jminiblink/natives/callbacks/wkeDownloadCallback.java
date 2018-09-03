@@ -2,8 +2,8 @@ package net.xjboss.jminiblink.natives.callbacks;
 
 import com.sun.jna.Pointer;
 
-import javax.security.auth.callback.Callback;
+import com.sun.jna.Callback;
 
 public interface wkeDownloadCallback extends Callback {
-    void invoke(Pointer webView, Pointer param, String url);
+    boolean invoke(Pointer webView, Pointer param, String url);
 }

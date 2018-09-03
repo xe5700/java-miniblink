@@ -8,7 +8,7 @@ import net.xjboss.jminiblink.natives.callbacks.*;
 import net.xjboss.jminiblink.natives.wke.wkeProxy;
 import net.xjboss.jminiblink.natives.wke.wkeSettings;
 
-import javax.security.auth.callback.Callback;
+import com.sun.jna.Callback;
 
 public interface NativeMiniBlink extends Library {
     int wkeVersion();
