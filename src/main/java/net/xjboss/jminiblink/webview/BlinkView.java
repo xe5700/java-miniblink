@@ -9,6 +9,7 @@ import net.xjboss.jminiblink.events.box.BlinkAlertBoxEvent;
 import net.xjboss.jminiblink.events.box.BlinkConfirmBoxEvent;
 import net.xjboss.jminiblink.events.box.BlinkPromptBoxEvent;
 import net.xjboss.jminiblink.events.job.BlinkOnLoadUrlBeginEvent;
+import net.xjboss.jminiblink.events.job.BlinkOnLoadUrlEndEvent;
 import net.xjboss.jminiblink.events.net.*;
 import net.xjboss.jminiblink.events.paint.BlinkOnPaintBitUpdatedEvent;
 import net.xjboss.jminiblink.events.paint.BlinkOnPaintUpdatedEvent;
@@ -43,8 +44,8 @@ public class BlinkView {
         fNative.wkeOnPromptBox(fBWebView,((webView, param, buffer, msg, defaultResult, result) -> fBrowser.getListenerManager().callEvent(new BlinkPromptBoxEvent(this,fNative.wkeGetString(msg),fNative.wkeGetString(defaultResult),fNative.wkeGetString(result)))),NULL);
         //fNative.wkeOnConsole(fBWebView,(((webView, param, level, message, sourceName, sourceLine, stackTrace) -> fBrowser.getListenerManager().callEvent(new Blink))));
         //fNative.wkeOnCreateView(fBWebView,(((webView, param, buffer, navigationType, url, windowFeatures) -> fBrowser.getListenerManager().callEvent(new BlinkOnC))));
-        fNative.wkeOnLoadUrlBegin(fBWebView,(((webView, param, url, job) -> fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlBeginEvent(this,url,job)))),NULL);
-        fNative.wkeOnLoadUrlEnd(fBWebView,(((webView, param, url, job) -> fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlBeginEvent(this,url,job)))),NULL);
+        //fNative.wkeOnLoadUrlBegin(fBWebView,(((webView, param, url, job) -> fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlBeginEvent(this,url.getString(0),job)))),NULL);
+        fNative.wkeOnLoadUrlEnd(fBWebView,(((webView, param, url, job,buf,len) -> fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlEndEvent(this,url,job,buf.getByteArray(0,len))))),NULL);
         fNative.wkeOnMouseOverUrlChanged(fBWebView,((webView, param, title) -> fBrowser.getListenerManager().callEvent(new BlinkOnMouseOverUrlChangedEvent(this,fNative.wkeGetString(title)))),NULL);
         fNative.wkeOnPaintBitUpdated(fBWebView,((webView, param, buffer, r, width, height) -> fBrowser.getListenerManager().callEvent(new BlinkOnPaintBitUpdatedEvent(this,buffer.getByteArray(0,width*height),r,width,height))),NULL);
         fNative.wkeOnPaintUpdated(fBWebView,(((webView, param, hdc, x, y, cx, cy) -> fBrowser.getListenerManager().callEvent(new BlinkOnPaintUpdatedEvent(this,hdc,x,y,cx,cy)))),NULL);

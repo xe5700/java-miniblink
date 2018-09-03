@@ -5,5 +5,5 @@ import com.sun.jna.Pointer;
 import com.sun.jna.Callback;
 
 public interface wkeLoadUrlBeginCallback extends Callback {
-    boolean invoke(Pointer webView, Pointer param, String url, Pointer job);
+    boolean invoke(Pointer webView, Pointer param, Pointer url, Pointer job);
 }

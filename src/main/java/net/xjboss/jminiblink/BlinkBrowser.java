@@ -76,13 +76,6 @@ public class BlinkBrowser {
             runTask(task).join();
         }
     }
-    public void getAutoRunTask(Runnable task){
-        if(checkThread()){
-            task.run();
-        }else {
-            runTask(task).join();
-        }
-    }
     public BlinkView createView(){
         val view=new AObj<BlinkView>();
         autoRunTask(()->{
@@ -121,11 +114,15 @@ public class BlinkBrowser {
         });
     }
     public <A extends Listener> void registerListener(Class<A> tClass){
-        listenerManager.registerListener(tClass);
+        autoRunTask(()->{
+            listenerManager.registerListener(tClass);
+        });
     }
 
     public <A extends Listener> void registerListener(A tObject){
-        listenerManager.registerListener(tObject);
+        autoRunTask(()->{
+            listenerManager.registerListener(tObject);
+        });
     }
 
     @Override
