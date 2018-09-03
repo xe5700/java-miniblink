@@ -4,10 +4,10 @@ import com.sun.jna.Library;
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 import com.sun.jna.platform.win32.WinDef;
-import net.xjboss.jminiblink.natives.callbacks.*;
 import net.xjboss.jminiblink.natives.wke.wkeProxy;
 import net.xjboss.jminiblink.natives.wke.wkeSettings;
-import net.xjboss.jminiblink.natives.wke.wkeWindowType;
+
+import javax.security.auth.callback.Callback;
 
 public interface NativeMiniBlink extends Library {
     int wkeVersion();
@@ -561,4 +561,96 @@ const wchar_t* jsToStringW(jsExecState es, jsValue v)
     当wkeRunJs、jsCall等接口调用时，如果执行的js代码有异常，此接口将获取到异常信息。否则返回nullptr。
     参数：略
     */
+
+    interface wkeAlertBoxCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, Pointer buffer, Pointer msg);
+    }
+
+    interface wkeConfirmBoxCallback {
+        void invoke(Pointer webView, Pointer param, Pointer buffer, Pointer msg);
+    }
+
+    interface wkeConsoleCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, Pointer level, Pointer message, Pointer sourceName, int sourceLine, Pointer stackTrace);
+    }
+
+    interface wkeCreateViewCallback {
+        void invoke(Pointer webView, Pointer param, Pointer buffer, Pointer navigationType, Pointer url, Pointer windowFeatures);
+    }
+
+    interface wkeDidCreateScriptContextCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, String url, Pointer info);
+    }
+
+    interface wkeDocumentReadyCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, String url, Pointer buf);
+    }
+
+    interface wkeDownloadCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, String url);
+    }
+
+    interface wkeLoadUrlBeginCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, String url, Pointer job);
+    }
+
+    interface wkeLoadUrlEndCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, String url, Pointer job);
+    }
+
+    interface wkeNavigationCallback {
+        void invoke(Pointer webView, Pointer param, int navigationType, Pointer url);
+    }
+
+    interface wkeNetResponseCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, String url, Pointer job);
+    }
+
+    interface wkeOnNetGetFaviconCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, Pointer url);
+    }
+
+    interface wkeOnShowDevtoolsCallback extends Callback {
+        void invoke(Pointer webView, Pointer param);
+    }
+
+    interface wkePaintBitUpdatedCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, Pointer buffer, Pointer r, int width, int height);
+    }
+
+    interface wkePaintUpdatedCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, WinDef.HDC hdc, int x, int y, int cx, int cy);
+    }
+
+    interface wkePromptBoxCallback {
+        void invoke(Pointer webView, Pointer param, Pointer buffer, Pointer msg, Pointer defaultResult, Pointer result);
+    }
+
+    interface wkeTitleChangedCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, Pointer title);
+    }
+
+    interface wkeURLChangedCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, Pointer url);
+    }
+
+    interface wkeURLChangedCallback2 extends Callback {
+        void invoke(Pointer webView, Pointer param, Pointer title, Pointer frameId, Pointer url);
+    }
+
+    interface wkeWillMediaLoadCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, String url, Pointer info);
+    }
+
+    interface wkeWillReleaseScriptContextCallback extends Callback {
+        void invoke(Pointer webView, Pointer param, Pointer frameId, Pointer context, int worldId);
+    }
+
+    interface wkeWindowClosingCallback extends Callback {
+        void invoke(Pointer webView, Pointer param);
+    }
+
+    interface wkeWindowDestroyCallback extends Callback {
+        void invoke(Pointer webView, Pointer param);
+    }
 }

@@ -66,7 +66,7 @@ public class HandlerList<M> implements Collection<Method> {
         if(tHandler==null){
             methods=handlers.getOrDefault(EventPriority.NORMAL,new ArrayList<>());
         }else{
-            methods=handlers.getOrDefault(tHandler.level(),new ArrayList<>());
+            methods=handlers.getOrDefault(tHandler.priority(),new ArrayList<>());
         }
         return methods.add(method);
     }
@@ -88,7 +88,7 @@ public class HandlerList<M> implements Collection<Method> {
             val tHandler = tMethod.getAnnotation(EventHandler.class);
             ArrayList<Method> methods;
             if (tHandler != null) {
-                methods = handlers.getOrDefault(tHandler.level(), new ArrayList<>());
+                methods = handlers.getOrDefault(tHandler.priority(), new ArrayList<>());
             }else{
                 return false;
             }

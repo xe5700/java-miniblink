@@ -2,18 +2,15 @@ package net.xjboss.jminiblink;
 
 import com.sun.jna.*;
 import com.sun.jna.platform.EnumConverter;
-import com.sun.jna.platform.win32.WinUser;
 import lombok.Getter;
 import lombok.val;
 import net.xjboss.jminiblink.natives.NativeMiniBlink;
 import net.xjboss.jminiblink.natives.NativeWinUtil;
-import net.xjboss.jminiblink.natives.wke.wkeProxy;
 import net.xjboss.jminiblink.natives.wke.wkeProxyType;
 import net.xjboss.jminiblink.natives.wke.wkeWindowType;
 import net.xjboss.jminiblink.objects.AObj;
 import net.xjboss.jminiblink.webview.BlinkView;
 import net.xjboss.jminiblink.webview.BlinkViewWindow;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.io.File;
 import java.util.Collections;
@@ -44,11 +41,15 @@ public class BlinkBrowser {
         thread_blink.setName("Java MiniBlink Browser Library "+thread_num.incrementAndGet());
         thread_blink.start();
     }
-    private void start(){
+    private void addTypes(){
         DefaultTypeMapper map=new DefaultTypeMapper();
         map.addTypeConverter(wkeWindowType.class,new EnumConverter<wkeWindowType>(wkeWindowType.class));
         map.addTypeConverter(wkeProxyType.class,new EnumConverter<wkeProxyType>(wkeProxyType.class));
         mNative=Native.loadLibrary(native_path+"miniblink"+(System.getProperty("os.arch").equalsIgnoreCase("AMD64")?"64":""),NativeMiniBlink.class,Collections.singletonMap(Library.OPTION_TYPE_MAPPER,map));
+
+    }
+    private void start(){
+        addTypes();
         mWinUtil=Native.loadLibrary(native_path+"win"+(System.getProperty("os.arch").equalsIgnoreCase("AMD64")?"64":"")+"utils",NativeWinUtil.class);
         mNative.wkeInit();
         while (enabled&&mWinUtil.canLoop()){

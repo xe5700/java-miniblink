@@ -5,9 +5,9 @@ import lombok.Setter;
 import net.xjboss.jminiblink.webview.BlinkView;
 
 
+@Getter
+@Setter
 public abstract class BlinkCancellableEvent extends BlinkEvent implements Cancellable {
-    @Getter
-    @Setter
     private boolean cancel;
     public BlinkCancellableEvent(BlinkView view) {
         super(view);
