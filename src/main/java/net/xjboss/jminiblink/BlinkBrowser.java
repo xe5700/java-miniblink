@@ -84,15 +84,23 @@ public class BlinkBrowser {
         }
     }
     public BlinkView createView(){
-        val view=new AObj<Pointer>();
-        autoRunTask(()->view.setObj(mNative.wkeCreateWebView()));
-        return new BlinkView(mNative, view.getObj(), this);
+        val view=new AObj<BlinkView>();
+        autoRunTask(()->{
+            val webView=mNative.wkeCreateWebView();
+            val bv=new BlinkView(mNative, webView, this);
+            view.setObj(bv);
+        });
+        return view.getObj();
     }
 
     public BlinkViewWindow createWindow(wkeWindowType type, int x, int y, int width, int height){
-        val window=new AObj<Pointer>();
-        autoRunTask(()->window.setObj(mNative.wkeCreateWebWindow(type.ordinal(),Pointer.NULL,x,y,width,height)));
-        return new BlinkViewWindow(mNative,window.getObj(),this);
+        val window=new AObj<BlinkViewWindow>();
+        autoRunTask(()->{
+            val webView=mNative.wkeCreateWebWindow(type.ordinal(),Pointer.NULL,x,y,width,height);
+            val bv= new BlinkViewWindow(mNative,webView,this);
+            window.setObj(bv);
+        });
+        return window.getObj();
     }
 
     public String miniBlinkVer(){
