@@ -76,6 +76,13 @@ public class BlinkBrowser {
             runTask(task).join();
         }
     }
+    public void getAutoRunTask(Runnable task){
+        if(checkThread()){
+            task.run();
+        }else {
+            runTask(task).join();
+        }
+    }
     public BlinkView createView(){
         val view=new AObj<Pointer>();
         autoRunTask(()->view.setObj(mNative.wkeCreateWebView()));
@@ -115,8 +122,8 @@ public class BlinkBrowser {
 
     @Override
     protected void finalize() throws Throwable {
+        super.finalize();
         if(enabled) {
-            super.finalize();
             shutdown();
         }
     }

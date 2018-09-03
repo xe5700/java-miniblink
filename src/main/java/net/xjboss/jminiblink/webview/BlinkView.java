@@ -49,7 +49,7 @@ public class BlinkView {
         fNative.wkeOnPaintBitUpdated(fBWebView,((webView, param, buffer, r, width, height) -> fBrowser.getListenerManager().callEvent(new BlinkOnPaintBitUpdatedEvent(this,buffer.getByteArray(0,width*height),r,width,height))),NULL);
         fNative.wkeOnPaintUpdated(fBWebView,(((webView, param, hdc, x, y, cx, cy) -> fBrowser.getListenerManager().callEvent(new BlinkOnPaintUpdatedEvent(this,hdc,x,y,cx,cy)))),NULL);
         fNative.wkeOnNavigation(fBWebView,((webView, param, navigationType, url) -> fBrowser.getListenerManager().callEvent(new BlinkOnNavigationEvent(this,wkeNavigationType.values()[navigationType],fNative.wkeGetString(url)))),NULL);
-        fNative.wkeOnURLChanged2(fBWebView,((webView, param, title, frameId, url) -> fBrowser.getListenerManager().callEvent(new BlinkURLChangedEvent(this,fNative.wkeGetString(url),frameId))),NULL);
+        //fNative.wkeOnURLChanged2(fBWebView,((webView, param, title, frameId, url) -> fBrowser.getListenerManager().callEvent(new BlinkURLChangedEvent(this,fNative.wkeGetString(url),frameId))),NULL);
         //fNative.wkeOnWillMediaLoad();
         //fNative.wkeOnWillReleaseScriptContext();
         fNative.wkeOnWindowClosing(fBWebView,((webView, param) -> fBrowser.getListenerManager().callEvent(new BlinkOnWindowClosingEvent(this))),NULL);
@@ -58,63 +58,71 @@ public class BlinkView {
 
     private final BlinkViewController fController =new BlinkViewController() {
         public boolean back(){
-            return fNative.wkeGoBack(fBWebView);
+            val obj=new AObj<Boolean>();
+            
+            fBrowser.autoRunTask(()->obj.setObj(fNative.wkeGoBack(fBWebView)));
+            return obj.getObj();
         }
 
         public boolean forward(){
-            return fNative.wkeGoForward(fBWebView);
+            val obj=new AObj<Boolean>();
+            
+            fBrowser.autoRunTask(()->obj.setObj(fNative.wkeGoForward(fBWebView)));
+            return obj.getObj();
         }
 
         public void stop(){
-            fNative.wkeStopLoading(fBWebView);
+            fBrowser.autoRunTask(()->fNative.wkeStopLoading(fBWebView));
         }
         public boolean reload(){
-            return fNative.wkeReload(fBWebView);
+            val obj=new AObj<Boolean>();
+            fBrowser.autoRunTask(()->obj.setObj(fNative.wkeReload(fBWebView)));
+            return obj.getObj();
         }
 
         public void loadURL(String url) {
-            fNative.wkeLoadURL(fBWebView,url);
+            fBrowser.autoRunTask(()->fNative.wkeLoadURL(fBWebView,url));
         }
 
         public void loadHTML(String html) {
-            fNative.wkeLoadHTML(fBWebView,html);
+            fBrowser.autoRunTask(()->fNative.wkeLoadHTML(fBWebView,html));
         }
 
         public void loadHTMLWithBaseUrl(String html, String baseUrl) {
-            fNative.wkeLoadHtmlWithBaseUrl(fBWebView,html,baseUrl);
+            fBrowser.autoRunTask(()->fNative.wkeLoadHtmlWithBaseUrl(fBWebView,html,baseUrl));
         }
 
         public void loadFile(String filename) {
-            fNative.wkeLoadFile(fBWebView,filename);
+            fBrowser.autoRunTask(()->fNative.wkeLoadFile(fBWebView,filename));
         }
     };
     private final BlinkViewEditor fEditor =new BlinkViewEditor() {
         public void selectAll() {
-            fNative.wkeEditorSelectAll(fBWebView);
+            fBrowser.autoRunTask(()->fNative.wkeEditorSelectAll(fBWebView));
         }
 
         public void unselect() {
-            fNative.wkeEditorUnSelect(fBWebView);
+            fBrowser.autoRunTask(()->fNative.wkeEditorUnSelect(fBWebView));
         }
 
         public void copy() {
-            fNative.wkeEditorCopy(fBWebView);
+            fBrowser.autoRunTask(()->fNative.wkeEditorCopy(fBWebView));
         }
 
         public void delete() {
-            fNative.wkeEditorDelete(fBWebView);
+            fBrowser.autoRunTask(()->fNative.wkeEditorDelete(fBWebView));
         }
 
         public void undo() {
-            fNative.wkeEditorUndo(fBWebView);
+            fBrowser.autoRunTask(()->fNative.wkeEditorUndo(fBWebView));
         }
 
         public void redo() {
-            fNative.wkeEditorRedo(fBWebView);
+            fBrowser.autoRunTask(()->fNative.wkeEditorRedo(fBWebView));
         }
 
         public void cut() {
-            fNative.wkeEditorCut(fBWebView);
+            fBrowser.autoRunTask(()->fNative.wkeEditorCut(fBWebView));
         }
     };
 
@@ -201,27 +209,35 @@ public class BlinkView {
     }
 
     public boolean isReady(){
-        return fNative.wkeIsDocumentReady(fBWebView);
+        val obj=new AObj<Boolean>();
+        fBrowser.autoRunTask(()->obj.setObj(fNative.wkeIsDocumentReady(fBWebView)));
+        return obj.getObj();
     }
 
     public String getTitle(){
-        return fNative.wkeGetTitle(fBWebView);
+        val obj=new AObj<String>();
+        fBrowser.autoRunTask(()->obj.setObj(fNative.wkeGetTitle(fBWebView)));
+        return obj.getObj();
     }
 
     public String getCookie(){
-        return fNative.wkeGetCookie(fBWebView);
+        val obj=new AObj<String>();
+        fBrowser.autoRunTask(()->obj.setObj(fNative.wkeGetCookie(fBWebView)));
+        return obj.getObj();
     }
 
     public void setCookie(String url,String cookie){
-        fNative.wkeSetCookie(fBWebView,url,cookie);
+        fBrowser.autoRunTask(()->fNative.wkeSetCookie(fBWebView,url,cookie));
     }
 
     public void setCookieEnabled(boolean enable){
-        fNative.wkeSetCookieEnabled(fBWebView,enable);
+        fBrowser.autoRunTask(()->fNative.wkeSetCookieEnabled(fBWebView,enable));
     }
 
     public String getURL(){
-        return fNative.wkeGetURL(fBWebView);
+        val obj=new AObj<String>();
+        fBrowser.autoRunTask(()->obj.setObj(fNative.wkeGetURL(fBWebView)));
+        return obj.getObj();
     }
 
     @Override
