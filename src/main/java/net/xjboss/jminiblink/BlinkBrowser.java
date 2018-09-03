@@ -4,6 +4,7 @@ import com.sun.jna.*;
 import com.sun.jna.platform.EnumConverter;
 import lombok.Getter;
 import lombok.val;
+import net.xjboss.jminiblink.events.Listener;
 import net.xjboss.jminiblink.natives.NativeMiniBlink;
 import net.xjboss.jminiblink.natives.NativeWinUtil;
 import net.xjboss.jminiblink.natives.wke.wkeProxyType;
@@ -104,6 +105,14 @@ public class BlinkBrowser {
             mNative.wkeShutdown();
         });
     }
+    public <A extends Listener> void registerListener(Class<A> tClass){
+        listenerManager.registerListener(tClass);
+    }
+
+    public <A extends Listener> void registerListener(A tObject){
+        listenerManager.registerListener(tObject);
+    }
+
     @Override
     protected void finalize() throws Throwable {
         if(enabled) {
