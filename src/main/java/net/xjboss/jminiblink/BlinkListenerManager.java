@@ -86,7 +86,7 @@ public class BlinkListenerManager {
             val levels = EventPriority.values();
             for (val l : levels) {
                 for (Method method : handlers.getHandlers(l)) {
-                    val tClass = listeners.get(method.getDeclaringClass());
+                    val tClass = method.getDeclaringClass();
                     if (tClass != null) {
                         val rl = listeners.get(tClass);
                         val eh=method.getAnnotation(EventHandler.class);

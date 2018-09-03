@@ -63,12 +63,10 @@ public class HandlerList<M> implements Collection<Method> {
     public boolean add(Method method) {
         val tHandler=method.getAnnotation(EventHandler.class);
         ArrayList<Method> methods;
-        if(tHandler==null){
-            methods=handlers.getOrDefault(EventPriority.NORMAL,new ArrayList<>());
-        }else{
-            methods=handlers.getOrDefault(tHandler.priority(),new ArrayList<>());
-        }
-        return methods.add(method);
+        methods=handlers.getOrDefault(tHandler.priority(),new ArrayList<>());
+        val ret= methods.add(method);
+        handlers.putIfAbsent(tHandler.priority(),methods);
+        return ret;
     }
 
     public boolean add(Class<? extends Listener> listener){
