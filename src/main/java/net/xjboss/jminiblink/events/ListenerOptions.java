@@ -16,15 +16,10 @@ public class ListenerOptions {
         for(val method:methods){
             val types=method.getParameterTypes();
             if(types.length==1){
-                if(types[0].isAssignableFrom(BlinkEvent.class)){
-                    ArrayList<Method> eventMethods;
-                    if (events.containsKey(types[0])){
-                        eventMethods=events.get(types[0]);
-                    }else{
-                        eventMethods=new ArrayList<Method>();
-                        events.put(types[0],eventMethods);
-                    }
+                if(BlinkEvent.class.isAssignableFrom(types[0])&&method.getAnnotation(EventHandler.class)!=null){
+                    ArrayList<Method> eventMethods=events.getOrDefault(types[0],new ArrayList<>());
                     eventMethods.add(method);
+                    events.putIfAbsent(types[0],eventMethods);
                 }
             }
         }

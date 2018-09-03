@@ -9,6 +9,8 @@ public class BlinkViewWindow extends BlinkView {
         super(mNative, mBWebView, mBrower);
     }
     public void show(boolean show){
-        fNative.wkeShowWindow(fBWebView,show);
+        fBrowser.autoRunTask(()->{
+            fNative.wkeShowWindow(fBWebView,show);
+        });
     }
 }

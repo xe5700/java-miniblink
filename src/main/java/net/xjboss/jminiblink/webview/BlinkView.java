@@ -44,6 +44,7 @@ public class BlinkView {
         fNative.wkeOnPromptBox(fBWebView,((webView, param, buffer, msg, defaultResult, result) -> fBrowser.getListenerManager().callEvent(new BlinkPromptBoxEvent(this,fNative.wkeGetString(msg),fNative.wkeGetString(defaultResult),fNative.wkeGetString(result)))),NULL);
         //fNative.wkeOnConsole(fBWebView,(((webView, param, level, message, sourceName, sourceLine, stackTrace) -> fBrowser.getListenerManager().callEvent(new Blink))));
         //fNative.wkeOnCreateView(fBWebView,(((webView, param, buffer, navigationType, url, windowFeatures) -> fBrowser.getListenerManager().callEvent(new BlinkOnC))));
+        //fNative.wkeOnLoadUrlBegin(fBWebView,((webView, param, url, job) -> true),NULL);
         //fNative.wkeOnLoadUrlBegin(fBWebView,(((webView, param, url, job) -> fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlBeginEvent(this,url.getString(0),job)))),NULL);
         fNative.wkeOnLoadUrlEnd(fBWebView,(((webView, param, url, job,buf,len) -> fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlEndEvent(this,url,job,buf.getByteArray(0,len))))),NULL);
         fNative.wkeOnMouseOverUrlChanged(fBWebView,((webView, param, title) -> fBrowser.getListenerManager().callEvent(new BlinkOnMouseOverUrlChangedEvent(this,fNative.wkeGetString(title)))),NULL);
