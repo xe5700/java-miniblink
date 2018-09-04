@@ -10,6 +10,8 @@ import net.xjboss.jminiblink.natives.NativeMiniBlink;
 import net.xjboss.jminiblink.natives.NativeWinUtil;
 import net.xjboss.jminiblink.natives.enums.wkeProxyType;
 import net.xjboss.jminiblink.natives.enums.wkeWindowType;
+import net.xjboss.jminiblink.natives.struct.wkeProxy;
+import net.xjboss.jminiblink.natives.struct.wkeSettings;
 import net.xjboss.jminiblink.objects.AObj;
 import net.xjboss.jminiblink.webview.BlinkView;
 import net.xjboss.jminiblink.webview.BlinkViewWindow;
@@ -107,6 +109,14 @@ public class BlinkBrowser {
         val obj=new AObj<String>();
         autoRunTask(()->obj.setObj(mNative.wkeVersionString()));
         return obj.getObj();
+    }
+
+    public void setProxy(wkeProxy proxy){
+        autoRunTask(()->mNative.wkeSetProxy(proxy));
+    }
+
+    public void configure(wkeSettings settings){
+        autoRunTask(()->mNative.wkeConfigure(settings));
     }
 
     public BlinkTask runTask(Runnable run){

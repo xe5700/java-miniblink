@@ -96,7 +96,7 @@ public class BlinkView {
         fNative.wkeOnPaintBitUpdated(fBWebView,((webView, param, buffer, r, width, height) -> fBrowser.getListenerManager().callEvent(new BlinkOnPaintBitUpdatedEvent(this,buffer.getByteArray(0,width*height),r,width,height))),NULL);
         fNative.wkeOnPaintUpdated(fBWebView,(((webView, param, hdc, x, y, cx, cy) -> fBrowser.getListenerManager().callEvent(new BlinkOnPaintUpdatedEvent(this,hdc,x,y,cx,cy)))),NULL);
         //System.out.println(fNative.wkeVersion());
-
+        fNative.wkeNetGetFavicon(fBWebView,((webView, param, url,buf) -> fBrowser.getListenerManager().callEvent(new BlinkOnNetGetFaviconEvent(this,url,buf.data.getByteArray(0,buf.length)))),NULL);
         //fNative.wkeOnNavigation(fBWebView,((webView, param, navigationType, url) -> fBrowser.getListenerManager().callEvent(new BlinkOnNavigationEvent(this,wkeNavigationType.values()[navigationType],fNative.wkeGetString(url)))),NULL);
         //fNative.wkeOnURLChanged2(fBWebView,((webView, param, title, frameId, url) -> fBrowser.getListenerManager().callEvent(new BlinkURLChangedEvent(this,fNative.wkeGetString(url),frameId))),NULL);
         //fNative.wkeOnWillMediaLoad();
