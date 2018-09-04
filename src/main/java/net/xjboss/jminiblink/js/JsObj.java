@@ -1,4 +1,4 @@
-package net.xjboss.jminiblink.objects;
+package net.xjboss.jminiblink.js;
 
 import lombok.Getter;
 import net.xjboss.jminiblink.natives.enums.jsType;

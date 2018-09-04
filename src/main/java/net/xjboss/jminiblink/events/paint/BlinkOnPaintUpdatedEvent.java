@@ -2,10 +2,12 @@ package net.xjboss.jminiblink.events.paint;
 
 import com.sun.jna.platform.win32.WinDef;
 import lombok.Getter;
+import lombok.ToString;
 import net.xjboss.jminiblink.events.BlinkCancellableEvent;
 import net.xjboss.jminiblink.webview.BlinkView;
 
 @Getter
+@ToString
 public class BlinkOnPaintUpdatedEvent extends BlinkCancellableEvent {
     private WinDef.HDC hdc;
     private int x;

@@ -1,11 +1,13 @@
 package net.xjboss.jminiblink.events.net;
 
 import lombok.Getter;
+import lombok.ToString;
 import net.xjboss.jminiblink.events.BlinkCancellableEvent;
 import net.xjboss.jminiblink.natives.enums.wkeNavigationType;
 import net.xjboss.jminiblink.webview.BlinkView;
 
 @Getter
+@ToString
 public class BlinkOnNavigationEvent extends BlinkCancellableEvent {
     private wkeNavigationType type;
     private String url;

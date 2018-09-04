@@ -2,10 +2,13 @@ package net.xjboss.jminiblink.events.paint;
 
 import com.sun.jna.Pointer;
 import lombok.Getter;
+import lombok.ToString;
 import net.xjboss.jminiblink.events.BlinkCancellableEvent;
 import net.xjboss.jminiblink.webview.BlinkView;
 
 @Getter
+@ToString
+
 public class BlinkOnPaintBitUpdatedEvent extends BlinkCancellableEvent {
     private byte[] buffer;
     private Pointer r;

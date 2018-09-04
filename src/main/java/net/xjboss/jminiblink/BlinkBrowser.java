@@ -5,6 +5,7 @@ import com.sun.jna.platform.EnumConverter;
 import lombok.Getter;
 import lombok.val;
 import net.xjboss.jminiblink.events.Listener;
+import net.xjboss.jminiblink.js.JsObjBuilder;
 import net.xjboss.jminiblink.natives.NativeMiniBlink;
 import net.xjboss.jminiblink.natives.NativeWinUtil;
 import net.xjboss.jminiblink.natives.enums.wkeProxyType;
@@ -35,6 +36,12 @@ public class BlinkBrowser {
     private LinkedBlockingQueue<BlinkTask> tasks=new LinkedBlockingQueue <>();
     @Getter
     private BlinkListenerManager listenerManager=new BlinkListenerManager();
+    private final JsObjBuilder fJsb=new JsObjBuilder(mNative,this);
+
+    public JsObjBuilder buildJS(){
+        return fJsb;
+    }
+
     BlinkBrowser(BlinkSetting setting){
         boolean notNull=setting!=null;
         native_path=notNull?setting.dll_path+File.separator:"libs"+File.separator;

@@ -1,14 +1,14 @@
-package net.xjboss.jminiblink.objects;
+package net.xjboss.jminiblink.js;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 import net.xjboss.jminiblink.BlinkBrowser;
 import net.xjboss.jminiblink.natives.NativeMiniBlink;
 import net.xjboss.jminiblink.natives.enums.jsType;
 import net.xjboss.jminiblink.natives.pointers.jsExecState;
 import net.xjboss.jminiblink.natives.struct.jsData;
+import net.xjboss.jminiblink.objects.AObj;
 
 import java.util.Arrays;
 import java.util.List;

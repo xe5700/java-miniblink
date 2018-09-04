@@ -1,4 +1,4 @@
-package net.xjboss.jminiblink.objects;
+package net.xjboss.jminiblink.js;
 
 import net.xjboss.jminiblink.natives.pointers.jsExecState;
 

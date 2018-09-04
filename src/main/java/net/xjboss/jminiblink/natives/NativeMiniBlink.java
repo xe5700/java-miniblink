@@ -63,9 +63,9 @@ public interface NativeMiniBlink extends Library {
     void wkeSetFocus(Pointer webView);
     void wkeKillFocus(Pointer webView);
     //wkeRect wkeGetCaretRect(wkeWebView webView);
-    //jsValue wkeRunJS(wkeWebView webView, String script);
+    long wkeRunJS(wkeWebView webView, String script);
     //jsValue wkeRunJSW(wkeWebView webView, const wchar_t* script);
-    //jsExecState wkeGlobalExec(wkeWebView webView);
+    jsExecState wkeGlobalExec(wkeWebView webView);
 
     void wkeSetZoomFactor(Pointer webView, float factor);
     float wkeGetZoomFactor(Pointer webView);
@@ -398,7 +398,7 @@ public interface NativeMiniBlink extends Library {
     获取es里存的参数个数。一般是在绑定的js调用c++回调里使用，判断js传递了多少参数给c++
     参数：略
     */
-    long jsArgType(jsExecState es, int argIdx);
+    int jsArgType(jsExecState es, int argIdx);
     /*
     判断第argIdx个参数的参数类型。argIdx从是个0开始计数的值。如果超出jsArgCount返回的值，将发生崩溃
     参数：略
@@ -571,7 +571,7 @@ public interface NativeMiniBlink extends Library {
     //属性访问器。在js里XXX.yyy这样调用时，jsGetPropertyCallback会被触发，并且propertyName的值为yyy
     typedef bool(*jsSetPropertyCallback)(jsExecState es, jsValue object, const char* propertyName, jsValue value);
     //属性设置器。在js里XXX.yyy=1这样调用时，jsSetPropertyCallback会被触发，并且propertyName的值为yyy，value的值是字符串类型。可以通过之前提到的字符串操作接口来获取
-    typedef jsValue(*jsCallAsFunctionCallback)(jsExecState es, jsValue object, jsValue* args, int argCount);
+    typedef jsValue(*jsCallAsFunctionCallback)(jsExecState es, jsValue object, jsValue* getArgCount, int argCount);
     //在js里XXX()这样调用时会触发。
     typedef void(*jsFinalizeCallback)(struct tagjsData* data);
     */

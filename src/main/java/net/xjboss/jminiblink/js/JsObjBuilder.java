@@ -1,10 +1,11 @@
-package net.xjboss.jminiblink.objects;
+package net.xjboss.jminiblink.js;
 
 import com.sun.jna.Memory;
 import lombok.val;
 import net.xjboss.jminiblink.BlinkBrowser;
 import net.xjboss.jminiblink.natives.NativeMiniBlink;
 import net.xjboss.jminiblink.natives.pointers.jsExecState;
+import net.xjboss.jminiblink.objects.AObj;
 
 public class JsObjBuilder {
     private final NativeMiniBlink fNative;
@@ -48,7 +49,7 @@ public class JsObjBuilder {
         return newObj(obj.getObj());
     }
 
-    JsObj newObj(long v){
+    protected JsObj newObj(long v){
         return new MBJsObj(v,fNative,this,fBrowser);
     }
 
