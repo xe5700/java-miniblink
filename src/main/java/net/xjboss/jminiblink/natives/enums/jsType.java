@@ -1,17 +1,19 @@
-package net.xjboss.jminiblink.natives.wke;
+package net.xjboss.jminiblink.natives.enums;
 
 import com.sun.jna.FromNativeContext;
 import com.sun.jna.NativeMapped;
 
-public enum wkeNavigationType implements NativeMapped {
-    WKE_NAVIGATION_TYPE_LINKCLICK,
-    WKE_NAVIGATION_TYPE_FORMSUBMITTE,
-    WKE_NAVIGATION_TYPE_BACKFORWARD,
-    WKE_NAVIGATION_TYPE_RELOAD,
-    WKE_NAVIGATION_TYPE_FORMRESUBMITT,
-    WKE_NAVIGATION_TYPE_OTHER;
+public enum jsType implements NativeMapped {
+    JSTYPE_NUMBER,
+    JSTYPE_STRING,
+    JSTYPE_BOOLEAN,
+    JSTYPE_OBJECT,
+    JSTYPE_FUNCTION,
+    JSTYPE_UNDEFINED,
+    JSTYPE_ARRAY,
+    JSTYPE_NULL;
 
-    wkeNavigationType() {
+    jsType() {
     }
 
     public Object fromNative(Object nativeValue, FromNativeContext context) {

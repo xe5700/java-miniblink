@@ -7,8 +7,8 @@ import lombok.val;
 import net.xjboss.jminiblink.events.Listener;
 import net.xjboss.jminiblink.natives.NativeMiniBlink;
 import net.xjboss.jminiblink.natives.NativeWinUtil;
-import net.xjboss.jminiblink.natives.wke.wkeProxyType;
-import net.xjboss.jminiblink.natives.wke.wkeWindowType;
+import net.xjboss.jminiblink.natives.enums.wkeProxyType;
+import net.xjboss.jminiblink.natives.enums.wkeWindowType;
 import net.xjboss.jminiblink.objects.AObj;
 import net.xjboss.jminiblink.webview.BlinkView;
 import net.xjboss.jminiblink.webview.BlinkViewWindow;
@@ -19,6 +19,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BlinkBrowser {
+    @Getter
+    private static BlinkBrowser instance;
     private final static AtomicInteger thread_num=new AtomicInteger();
     private NativeMiniBlink mNative;
     private NativeWinUtil mWinUtil;
@@ -28,14 +30,11 @@ public class BlinkBrowser {
     private Thread thread_blink=new Thread(()-> start());
 
     private String native_path;
+    @Getter
     private boolean enabled=true;
     private LinkedBlockingQueue<BlinkTask> tasks=new LinkedBlockingQueue <>();
     @Getter
     private BlinkListenerManager listenerManager=new BlinkListenerManager();
-    BlinkBrowser(){
-        this(null);
-    }
-
     BlinkBrowser(BlinkSetting setting){
         boolean notNull=setting!=null;
         native_path=notNull?setting.dll_path+File.separator:"libs"+File.separator;
@@ -46,12 +45,13 @@ public class BlinkBrowser {
         DefaultTypeMapper map=new DefaultTypeMapper();
         map.addTypeConverter(wkeWindowType.class,new EnumConverter<wkeWindowType>(wkeWindowType.class));
         map.addTypeConverter(wkeProxyType.class,new EnumConverter<wkeProxyType>(wkeProxyType.class));
+
         mNative=Native.loadLibrary(native_path+"miniblink"+(System.getProperty("os.arch").equalsIgnoreCase("AMD64")?"64":""),NativeMiniBlink.class,Collections.singletonMap(Library.OPTION_TYPE_MAPPER,map));
 
     }
     private void start(){
         addTypes();
-        mWinUtil=Native.loadLibrary(native_path+"win"+(System.getProperty("os.arch").equalsIgnoreCase("AMD64")?"64":"")+"utils",NativeWinUtil.class);
+        mWinUtil=Native.loadLibrary(native_path+"win"+(System.getProperty("os.arch").equalsIgnoreCase("AMD64")?"64":"32")+"utils",NativeWinUtil.class);
         mNative.wkeInit();
         while (enabled&&mWinUtil.canLoop()){
             mWinUtil.handleWindow();
@@ -111,6 +111,7 @@ public class BlinkBrowser {
         autoRunTask(()->{
             enabled = false;
             mNative.wkeShutdown();
+            instance=null;
         });
     }
     public <A extends Listener> void registerListener(Class<A> tClass){

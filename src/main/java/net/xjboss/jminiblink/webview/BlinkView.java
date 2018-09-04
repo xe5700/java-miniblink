@@ -16,8 +16,8 @@ import net.xjboss.jminiblink.events.paint.BlinkOnPaintUpdatedEvent;
 import net.xjboss.jminiblink.events.window.BlinkOnWindowClosingEvent;
 import net.xjboss.jminiblink.events.window.BlinkOnWindowDestroyEvent;
 import net.xjboss.jminiblink.natives.NativeMiniBlink;
-import net.xjboss.jminiblink.natives.wke.wkeNavigationType;
-import net.xjboss.jminiblink.natives.wke.wkeRequestType;
+import net.xjboss.jminiblink.natives.enums.wkeNavigationType;
+import net.xjboss.jminiblink.natives.enums.wkeRequestType;
 import net.xjboss.jminiblink.objects.AObj;
 
 import static com.sun.jna.Pointer.NULL;
@@ -34,7 +34,6 @@ public class BlinkView {
         this.fBrowser = mBrowser;
         init();
     }
-
     private void init(){
         fNative.wkeOnDownload(fBWebView,((webView, param, url) -> fBrowser.getListenerManager().callEvent(new BlinkDownloadEvent(this,url))),NULL);
         fNative.wkeOnDocumentReady(fBWebView,((webView, param, url, buf) -> fBrowser.getListenerManager().callEvent(new BlinkOnDocumentReadyEvent(this,url,buf))),NULL);
@@ -44,10 +43,13 @@ public class BlinkView {
         fNative.wkeOnPromptBox(fBWebView,((webView, param, buffer, msg, defaultResult, result) -> fBrowser.getListenerManager().callEvent(new BlinkPromptBoxEvent(this,fNative.wkeGetString(msg),fNative.wkeGetString(defaultResult),fNative.wkeGetString(result)))),NULL);
         //fNative.wkeOnConsole(fBWebView,(((webView, param, level, message, sourceName, sourceLine, stackTrace) -> fBrowser.getListenerManager().callEvent(new Blink))));
         //fNative.wkeOnCreateView(fBWebView,(((webView, param, buffer, navigationType, url, windowFeatures) -> fBrowser.getListenerManager().callEvent(new BlinkOnC))));
-        //fNative.wkeOnLoadUrlBegin(fBWebView,((webView, param, url, job) -> true),NULL);
-        //fNative.wkeOnLoadUrlBegin(fBWebView,(((webView, param, url, job) -> fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlBeginEvent(this,url.getString(0),job)))),NULL);
-        fNative.wkeOnLoadUrlEnd(fBWebView,(((webView, param, url, job,buf,len) -> fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlEndEvent(this,url,job,buf.getByteArray(0,len))))),NULL);
+
+        fNative.wkeOnLoadUrlBegin(fBWebView,(((webView, param, url, job) ->
+            !fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlBeginEvent(this,url,job))
+        )),NULL);
+
         fNative.wkeOnMouseOverUrlChanged(fBWebView,((webView, param, title) -> fBrowser.getListenerManager().callEvent(new BlinkOnMouseOverUrlChangedEvent(this,fNative.wkeGetString(title)))),NULL);
+        fNative.wkeOnLoadUrlEnd(fBWebView,(((webView, param, url, job,buf,len) -> !fBrowser.getListenerManager().callEvent(new BlinkOnLoadUrlEndEvent(this,url,job,buf.getByteArray(0,len))))),NULL);
         fNative.wkeOnPaintBitUpdated(fBWebView,((webView, param, buffer, r, width, height) -> fBrowser.getListenerManager().callEvent(new BlinkOnPaintBitUpdatedEvent(this,buffer.getByteArray(0,width*height),r,width,height))),NULL);
         fNative.wkeOnPaintUpdated(fBWebView,(((webView, param, hdc, x, y, cx, cy) -> fBrowser.getListenerManager().callEvent(new BlinkOnPaintUpdatedEvent(this,hdc,x,y,cx,cy)))),NULL);
         fNative.wkeOnNavigation(fBWebView,((webView, param, navigationType, url) -> fBrowser.getListenerManager().callEvent(new BlinkOnNavigationEvent(this,wkeNavigationType.values()[navigationType],fNative.wkeGetString(url)))),NULL);
@@ -241,7 +243,9 @@ public class BlinkView {
         fBrowser.autoRunTask(()->obj.setObj(fNative.wkeGetURL(fBWebView)));
         return obj.getObj();
     }
-
+    public void setNavigationToNewWindowEnable(boolean b){
+        fNative.wkeSetNavigationToNewWindowEnable(fBWebView,b);
+    }
     @Override
     protected void finalize() throws Throwable {
         super.finalize();

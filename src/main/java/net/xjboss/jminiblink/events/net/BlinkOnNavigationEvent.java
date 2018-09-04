@@ -2,7 +2,7 @@ package net.xjboss.jminiblink.events.net;
 
 import lombok.Getter;
 import net.xjboss.jminiblink.events.BlinkCancellableEvent;
-import net.xjboss.jminiblink.natives.wke.wkeNavigationType;
+import net.xjboss.jminiblink.natives.enums.wkeNavigationType;
 import net.xjboss.jminiblink.webview.BlinkView;
 
 @Getter

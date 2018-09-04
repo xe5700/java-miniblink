@@ -2,9 +2,10 @@ package net.xjboss.jminiblink;
 
 public class BlinkBrowserBuilder {
     public static BlinkBrowser create(){
-        return new BlinkBrowser();
+        return create(null);
     }
-    public static BlinkBrowser create(BlinkSetting setting){
+    public synchronized static BlinkBrowser create(BlinkSetting setting){
+        if(BlinkBrowser.getInstance()!=null)return BlinkBrowser.getInstance();
         return new BlinkBrowser(setting);
     }
 }

@@ -1,7 +1,7 @@
 package net.xjboss.jminiblink.webview;
 
 import com.sun.jna.Pointer;
-import net.xjboss.jminiblink.natives.wke.wkeRequestType;
+import net.xjboss.jminiblink.natives.enums.wkeRequestType;
 
 public interface BlinkViewNet {
     void setHTTPHeaderField(String key,String value,boolean response);

@@ -1,17 +1,17 @@
-package net.xjboss.jminiblink.natives.wke;
+package net.xjboss.jminiblink.natives.enums;
 
 import com.sun.jna.FromNativeContext;
 import com.sun.jna.NativeMapped;
 
-public enum  wkeProxyType implements NativeMapped {
-    WKE_PROXY_NONE,
-    WKE_PROXY_HTTP,
-    WKE_PROXY_SOCKS4,
-    WKE_PROXY_SOCKS4A,
-    WKE_PROXY_SOCKS5,
-    WKE_PROXY_SOCKS5HOSTNAME;
+public enum wkeNavigationType implements NativeMapped {
+    WKE_NAVIGATION_TYPE_LINKCLICK,
+    WKE_NAVIGATION_TYPE_FORMSUBMITTE,
+    WKE_NAVIGATION_TYPE_BACKFORWARD,
+    WKE_NAVIGATION_TYPE_RELOAD,
+    WKE_NAVIGATION_TYPE_FORMRESUBMITT,
+    WKE_NAVIGATION_TYPE_OTHER;
 
-    wkeProxyType() {
+    wkeNavigationType() {
     }
 
     public Object fromNative(Object nativeValue, FromNativeContext context) {

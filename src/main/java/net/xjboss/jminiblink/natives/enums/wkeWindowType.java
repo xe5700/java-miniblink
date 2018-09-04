@@ -1,15 +1,15 @@
-package net.xjboss.jminiblink.natives.wke;
+package net.xjboss.jminiblink.natives.enums;
 
 import com.sun.jna.FromNativeContext;
 import com.sun.jna.NativeMapped;
 
-public enum wkeRequestType implements NativeMapped {
+public enum wkeWindowType implements NativeMapped {
+    WKE_WINDOW_TYPE_POPUP,
+    WKE_WINDOW_TYPE_TRANSPARENT,
+    WKE_WINDOW_TYPE_CONTROL;
 
-    kWkeRequestTypeInvalidation,
-    kWkeRequestTypeGet,
-    kWkeRequestTypePost,
-    kWkeRequestTypePut;
-
+    wkeWindowType() {
+    }
 
     public Object fromNative(Object nativeValue, FromNativeContext context) {
         return values()[(Integer) nativeValue];
@@ -23,4 +23,4 @@ public enum wkeRequestType implements NativeMapped {
         return Integer.class;
     }
 
-    }
+}

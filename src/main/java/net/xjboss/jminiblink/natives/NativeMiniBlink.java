@@ -5,10 +5,13 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 import com.sun.jna.platform.win32.WinDef;
 import net.xjboss.jminiblink.natives.callbacks.*;
-import net.xjboss.jminiblink.natives.wke.wkeProxy;
-import net.xjboss.jminiblink.natives.wke.wkeSettings;
-
-import com.sun.jna.Callback;
+import net.xjboss.jminiblink.natives.pointers.jsExecState;
+import net.xjboss.jminiblink.natives.pointers.wkeWebView;
+import net.xjboss.jminiblink.natives.struct.jsData;
+import net.xjboss.jminiblink.natives.struct.jsKeys;
+import net.xjboss.jminiblink.natives.struct.wkeMemBuf;
+import net.xjboss.jminiblink.natives.struct.wkeProxy;
+import net.xjboss.jminiblink.natives.struct.wkeSettings;
 
 public interface NativeMiniBlink extends Library {
     int wkeVersion();
@@ -91,7 +94,7 @@ public interface NativeMiniBlink extends Library {
     void wkeOnWillMediaLoad(Pointer webView, wkeWillMediaLoadCallback callback, Pointer callbackParam);
     boolean wkeIsMainFrame(Pointer webView, Pointer frameId);
     //wkeWebFrameHandle wkeWebFrameGetMainFrame(wkeWebView webView);
-    //jsValue wkeRunJsByFrame(wkeWebView webView, wkeWebFrameHandle frameId, String script, bool isInClosure);
+    //jsValue wkeRunJsByFrame(wkeWebView webView, wkeWebFrameHandle frameId, String script, boolean isInClosure);
     String wkeGetFrameUrl(Pointer webView, Pointer frameId);
     String wkeGetString(Pointer s);
     void wkeSetString(Pointer string, String str, int len);
@@ -389,117 +392,145 @@ public interface NativeMiniBlink extends Library {
     /*
     这四个接口要结合起来使用。 当wkeOnLoadUrlBegin里判断是post时，可以通过wkeNetCreatePostBodyElements来创建一个新的post数据包。 然后wkeNetFreePostBodyElements来释放原post数据。
     参数：略
-    int jsArgCount(jsExecState es)
+    */
+    int jsArgCount(jsExecState es);
+    /*
     获取es里存的参数个数。一般是在绑定的js调用c++回调里使用，判断js传递了多少参数给c++
     参数：略
-    jsType jsArgType(jsExecState es, int argIdx)
+    */
+    long jsArgType(jsExecState es, int argIdx);
+    /*
     判断第argIdx个参数的参数类型。argIdx从是个0开始计数的值。如果超出jsArgCount返回的值，将发生崩溃
     参数：略
-    jsValue jsArg(jsExecState es, int argIdx)
+    */
+    long jsArg(jsExecState es, int argIdx);
+    /*
     获取第argIdx对应的参数的jsValue值。
     参数：略
-    jsType jsTypeOf(jsValue v)
-    获取v对应的类型。
-    参数：略
-    bool jsIsNumber(jsValue v)
-    判断v是否为数字
-    参数：略
-    bool jsIsString(jsValue v)
-    略
-    参数：略
-    bool jsIsBoolean(jsValue v)
-    略
-    参数：略
-    bool jsIsObject(jsValue v)
-    当v不是数字、字符串、undefined、null、函数的时候，此接口返回true
-    参数：略
-    bool jsIsTrue(jsValue v)
-    如果v本身是个布尔值，返回对应的true或者false；如果是个对象（JSTYPE_OBJECT），返回false（这里注意）
-    参数：略
-    bool jsIsFalse(jsValue v)
+    */
+    int jsTypeOf(long v);
+    boolean jsIsNull(long v);
+    boolean jsIsTrue(long v);
+    /*
     等价于!jsIsTrue(v)
     参数：略
-    int jsToInt(jsExecState es, jsValue v)
+    */
+    int jsToInt(jsExecState es, long v);
+    /*
     如果v是个整形或者浮点，返回相应值（如果是浮点，返回取整后的值）。如果是其他类型，返回0（这里注意）
     参数：略
-    double jsToDouble(jsExecState es, jsValue v)
+    */
+    double jsToDouble(jsExecState es, long v);
+    /*
     如果v是个浮点形，返回相应值。如果是其他类型，返回0.0（这里注意）
     参数：略
-const wchar_t* jsToTempStringW(jsExecState es, jsValue v)
+    */
+    String jsToString(jsExecState es, long v);
+    /*
     如果v是个字符串，返回相应值。如果是其他类型，返回L""（这里注意） 另外，返回的字符串不需要外部释放。mb会在下一帧自动释放
     参数：略
-const utf8* jsToTempString(jsExecState es, jsValue v)
-    同上
-    参数：略
-const utf8* jsToString(jsExecState es, jsValue v)
-    同上，只是返回的是utf8编码
-    参数：略
-const wchar_t* jsToStringW(jsExecState es, jsValue v)
-    略
-    参数：略
-    jsValue jsInt(int n)
+    */
+    long jsInt(int n);
+    /*
     创建建一个int型的jsValue，注意是创建
     参数：略
-    jsValue jsString(jsExecState es, const utf8* str)
+    */
+    long jsString(jsExecState es, String str);
+    /*
     构建一个utf8编码的字符串的的jsValue。str会在内部拷贝保存，注意是创建
     参数：略
-    jsValue jsArrayBuffer(jsExecState es, char * buffer, size_t size)
+    */
+    long jsArrayBuffer(jsExecState es, Pointer buffer, long size);
+    /*
     构建一个js的arraybuffer类型的jaValue。主要用来处理一些二进制数据，注意是创建
     参数：略
-    wkeMemBuf* jsGetArrayBuffer(jsExecState es, jsValue value)
+    */
+    wkeMemBuf.ByReference jsGetArrayBuffer(jsExecState es, long value);
+    /*
     获取一个js的arraybuffer类型的数据。主要用来处理一些二进制数据
     参数：略
-    jsValue jsEmptyObject(jsExecState es)
+    */
+    long jsEmptyObject(jsExecState es);
+    /*
     构建一个临时js object的jsValue，注意是创建
     参数：略
-    jsValue jsEvalW(jsExecState es, const wchar_t* str)
+    */
+    long jsEvalW(jsExecState es, WString str);
+    /*
     执行一段js，并返回值。
     参数：略
     注意：str的代码会在mb内部自动被包裹在一个function(){}中。所以使用的变量会被隔离 注意：要获取返回值，请写return。这和wke不太一样。wke不需要写retrun
-    jsValue jsEvalExW(jsExecState es, const wchar_t* str, bool isInClosure)
+    */
+    long jsEvalExW(jsExecState es, WString str, boolean isInClosure);
+    /*
     和上述接口的区别是，isInClosure表示是否要包裹一层function(){}。jsEvalW相当于jsEvalExW(es, str, false)
     参数：略
     注意：如果需要返回值，在isInClosure为true时，需要写return，为false则不用
-    jsValue jsCall(jsExecState es, jsValue func, jsValue thisValue, jsValue* args, int argCount)
+    */
+    long jsCall(jsExecState es, long func, long thisValue, Pointer args, int argCount);
+    /*
     调用一个func对应的js函数。如果此js函数是成员函数，则需要填thisValue。 否则可以传jsUndefined。args是个数组，个数由argCount控制。 func可以是从js里取的，也可以是自行构造的。
     参数：略
-    jsValue jsCallGlobal(jsExecState es, jsValue func, jsValue* args, int argCount)
-    调用window上的全局函数
-    参数：略
-    jsValue jsGet(jsExecState es, jsValue object, const char* prop)
+    */
+    long jsCallGlobal(jsExecState es, long func, Pointer args, int argCount);
+
+    long jsGet(jsExecState es, long object, String prop);
+    /*
     如果object是个js的object，则获取prop指定的属性。如果object不是js object类型，则返回jsUndefined
     参数：略
-    void jsSet(jsExecState es, jsValue object, const char* prop, jsValue value)
+    */
+    void jsSet(jsExecState es, long object, String prop, long value);
+    /*
     设置object的属性
     参数：略
-    jsValue jsGetGlobal(jsExecState es, const char* prop)
+    */
+    long jsGetGlobal(jsExecState es, String prop);
+    /*
     获取window上的属性
     参数：略
-    void jsSetGlobal(jsExecState es, const char* prop, jsValue v)
+    */
+    void jsSetGlobal(jsExecState es, String prop, long v);
+    /*
     设置window上的属性
     参数：略
-    jsValue jsGetAt(jsExecState es, jsValue object, int index)
+    */
+    long jsGetAt(jsExecState es, long object, int index);
+    /*
     设置js arrary的第index个成员的值，object必须是js array才有用，否则会返回jsUndefined
     参数：略
-    void jsSetAt(jsExecState es, jsValue object, int index, jsValue value)
+    */
+    void jsSetAt(jsExecState es, long object, int index, long value);
+    /*
     设置js arrary的第index个成员的值，object必须是js array才有用。
     参数：略
-    jsKeys* jsGetKeys(jsExecState es, jsValue object)
+    */
+    jsKeys jsGetKeys(jsExecState es, long object);
+    /*
     获取object有哪些key
     参数：略
-    int jsGetLength(jsExecState es, jsValue object)
+    */
+    int jsGetLength(jsExecState es, long object);
+    /*
     获取js arrary的长度，object必须是js array才有用。
     参数：略
-    void jsSetLength(jsExecState es, jsValue object, int length)
+    */
+    void jsSetLength(jsExecState es, long object, int length);
+    /*
     设置js arrary的长度，object必须是js array才有用。
     参数：略
-    wkeWebView jsGetWebView(jsExecState es)
+    */
+    wkeWebView jsGetWebView(jsExecState es);
+    /*
     获取es对应的webview
     参数：略
-    void jsGC()
+    */
+    void jsGC();
+    /*
     强制垃圾回收
     参数：略
-    void fastcall jsBindFunction(const char* name, jsNativeFunction fn, unsigned int argCount)
+    */
+    void jsBindFunction(String name, jsNativeFunction fn, int argCount);
+        /*
     绑定一个全局函数到主frame的window上。
     参数：略
     注意：此接口只能绑定主frame，并且特别需要注意的是，因为历史原因，此接口是fastcall调用约定！（但wkeJsBindFunction不是）
@@ -524,14 +555,14 @@ const wchar_t* jsToStringW(jsExecState es, jsValue v)
     参数：略
     示例：jsBindGetter("XXX")
     */
-    //void jsBindSetter(String name, jsNativeFunction fn);
+    void jsBindSetter(String name, jsNativeFunction fn);
     //void wkeJsBindFunction(String name, wkeJsNativeFunction fn, void* param, unsigned int argCount);
     /*
     和jsBindFunction功能类似，但更方便一点，可以传一个param做自定义数据。
     参数：略
             此接口和wkeJsBindFunction必须在webview创建前调用
     */
-    //jsValue jsObject(jsExecState es, jsData* data)
+    //long jsObject(jsExecState es, jsData* data)
     /*
     构建一个js Objcet，可以传递给js使用。
     参数：*/
@@ -547,12 +578,12 @@ const wchar_t* jsToStringW(jsExecState es, jsValue v)
     /*
     在js里没人引用，且垃圾回收时会触发
     */
-    //jsValue jsFunction(jsExecState es, jsData* data)
+    //long jsFunction(jsExecState es, jsData data);
     /*
     创建一个主frame的全局函数。jsData的用法如上。js调用：XXX() 此时jsData的callAsFunction触发。 其实jsFunction和jsObject功能基本类似。且jsObject的功能更强大一些
     参数：略
      */
-    //jsData* jsGetData(jsExecState es, jsValue value)
+    jsData jsGetData(jsExecState es, long value);
     /*
     获取jsObject或jsFunction创建的jsValue对应的jsData指针。
     参数：略
@@ -562,4 +593,5 @@ const wchar_t* jsToStringW(jsExecState es, jsValue v)
     当wkeRunJs、jsCall等接口调用时，如果执行的js代码有异常，此接口将获取到异常信息。否则返回nullptr。
     参数：略
     */
+    void wkeNetHookRequest(Pointer job);
 }
